@@ -14,12 +14,12 @@ let players = [
 
 // rota raiz
 app.get("/", (req, res) => {
-  res.send("Servidor rodando!");
+  res.status(200).send("Servidor rodando!");
 });
 
 // listar todos
 app.get("/jogadores", (req, res) => {
-  res.json(players);
+  res.status(200).json(players);
 });
 
 // detalhar 1
@@ -28,11 +28,14 @@ app.get("/jogadores/:id", (req, res) => {
   if (!player) {
     return res.status(404).json({ erro: "Jogador não encontrado" });
   }
-  res.json(player);
+  res.status(200).json(player);
 });
 
 // criar
 app.post("/jogadores", (req, res) => {
+    if (req.body.id && players.some(p => p.id === req.body.id)) {
+      return res.status(400).json({ erro: "ID já existe" });
+    }
   const novo = {
     id: req.body.id || players.length + 1, // gera ID automático
     nome: req.body.nome,
@@ -50,7 +53,7 @@ app.delete("/jogadores/:id", (req, res) => {
     return res.status(404).json({ erro: "Jogador não encontrado" });
   }
   players = players.filter(p => p.id !== id);
-  res.json({ mensagem: "Jogador removido com sucesso" });
+  res.status(200).json({ mensagem: "Jogador removido com sucesso" });
 });
 
 // start
