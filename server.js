@@ -13,6 +13,7 @@ app.use((req, res, next) => {
 
 app.use(express.json()); // para ler JSON do body
 // teste do primeiro commit
+//  alteração do commit do EDU
 // rota raiz
 app.get("/", (req, res) => {
   res.status(200).send("Servidor rodando!");
