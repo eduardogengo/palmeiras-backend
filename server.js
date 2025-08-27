@@ -2,7 +2,7 @@ const express = require("express");
 const pool = require("./db");
 const app = express();
 const PORT = 3000;
-
+const { parseISO, addDays, getDay, isSaturday, isSunday } = require("date-fns");
 // cors habilitado pra todos
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -90,6 +90,41 @@ app.delete("/jogadores/:id", (req, res) => {
       console.error(err);
       res.status(500).json({ erro: "Erro ao excluir jogador no banco" });
     });
+});
+// Endpoint para adicionar dias úteis a uma data
+app.post("/adicionar-dias-uteis", (req, res) => {
+  const { dataInicio, diasParaAdicionar } = req.body;
+
+  // Validação básica dos dados
+  if (!dataInicio || diasParaAdicionar === undefined) {
+    return res.status(400).json({
+      error: 'Os campos "dataInicio" e "diasParaAdicionar" são obrigatórios.',
+    });
+  }
+
+  // Parse da data de início
+  let dataAtual = parseISO(dataInicio);
+  let diasAdicionados = 0;
+
+  // Loop para adicionar os dias, ignorando sábados e domingos
+  while (diasAdicionados < diasParaAdicionar) {
+    dataAtual = addDays(dataAtual, 1);
+
+    // Verifica se o dia atual não é sábado (6) ou domingo (0)
+    if (!isSaturday(dataAtual) && !isSunday(dataAtual)) {
+      diasAdicionados++;
+    }
+  }
+
+  // Formatação para um formato de data padrão (YYYY-MM-DD)
+  const dataFinal = dataAtual.toISOString().split("T")[0];
+
+  // Resposta do endpoint com a nova data
+  res.json({
+    dataInicio: dataInicio,
+    diasAdicionados: diasParaAdicionar,
+    dataFinal: dataFinal,
+  });
 });
 
 // start
