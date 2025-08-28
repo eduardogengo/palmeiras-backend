@@ -10,7 +10,6 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
-
 app.use(express.json()); // para ler JSON do body
 // teste do primeiro commit
 //  alteração do commit do EDU
@@ -126,7 +125,39 @@ app.post("/adicionar-dias-uteis", (req, res) => {
     dataFinal: dataFinal,
   });
 });
+//licao de casa
+app.get("/dia-da-semana/:data", (req, res) => {
+  const { data } = req.params;
 
+  try {
+    // Função declarada dentro da rota
+    const getDayOfWeek = (dateString) => {
+      const date = new Date(dateString);
+      const days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      return days[date.getUTCDay()];
+    };
+
+    const diaDaSemana = getDayOfWeek(data);
+
+    if (!diaDaSemana) {
+      return res
+        .status(400)
+        .json({ error: "Data inválida. Use formato YYYY-MM-DD" });
+    }
+
+    res.json({ diaDaSemana });
+  } catch (err) {
+    res.status(400).json({ error: "Erro ao processar a data." });
+  }
+});
 // start
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
