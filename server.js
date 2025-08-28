@@ -154,6 +154,7 @@ app.get("/dia-da-semana/:data", (req, res) => {
     }
 
     res.json({ diaDaSemana });
+    //
   } catch (err) {
     res.status(400).json({ error: "Erro ao processar a data." });
   }
