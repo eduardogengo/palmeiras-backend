@@ -166,7 +166,7 @@ app.get("/teste-conexao-db", async (req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
     res.json({ message: "Conexão bem-sucedida!", time: result.rows[0] });
-  } catch (err) {
+  } catch (error) {
     console.error(error);
     res.status(500).json(error);
   }
