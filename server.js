@@ -20,12 +20,13 @@ app.get("/", (req, res) => {
 
 // listar todos
 app.get("/jogadores", async (req, res) => {
+  console.log('pool', pool);
   try {
     const result = await pool.query("SELECT * FROM jogador");
     res.json(result.rows); // no pg, os dados vêm em result.rows
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Erro ao buscar jogadores" });
+    res.status(500).json({ error: "Erro ao buscar jogadores", mensagem: err } );
   }
 });
 
