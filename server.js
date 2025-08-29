@@ -21,13 +21,14 @@ app.get("/", (req, res) => {
 // listar todos
 app.get("/jogadores", async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM jogador");
-    res.json(rows);
+    const result = await pool.query("SELECT * FROM jogador");
+    res.json(result.rows); // no pg, os dados vêm em result.rows
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Erro ao buscar jogadores" });
   }
 });
+
 
 // detalhar 1
 app.get("/jogadores/:id", async (req, res) => {
@@ -35,61 +36,61 @@ app.get("/jogadores/:id", async (req, res) => {
     const id = parseInt(req.params.id);
 
     // consulta o banco
-    const [rows] = await pool.query("SELECT * FROM jogador WHERE id = ?", [id]);
+    const result = await pool.query("SELECT * FROM jogador WHERE id = $1", [id]);
 
-    if (rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ erro: "Jogador não encontrado" });
     }
 
-    res.status(200).json(rows[0]); // retorna o jogador encontrado
+    res.status(200).json(result.rows[0]); // retorna o jogador encontrado
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: "Erro ao buscar jogador no banco" });
   }
 });
 
+
 // criar
-app.post("/jogadores", (req, res) => {
-  if (!req.body.nome || !req.body.posicao) {
+app.post("/jogadores", async (req, res) => {
+  const { nome, posicao } = req.body;
+
+  if (!nome || !posicao) {
     return res.status(400).json({ erro: "Nome e posição são obrigatórios" });
   }
-  // insert no banco
-  const novoJogador = {
-    nome: req.body.nome,
-    posicao: req.body.posicao,
-  };
-  pool
-    .query("INSERT INTO jogador SET ?", novoJogador)
-    .then(() => {
-      res.status(201).json({ mensagem: "Jogador criado com sucesso" });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ erro: "Erro ao criar jogador no banco" });
-    });
+
+  try {
+    await pool.query(
+      "INSERT INTO jogador (nome, posicao) VALUES ($1, $2)",
+      [nome, posicao]
+    );
+    res.status(201).json({ mensagem: "Jogador criado com sucesso" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao criar jogador no banco" });
+  }
 });
 
 // excluir
-app.delete("/jogadores/:id", (req, res) => {
+app.delete("/jogadores/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) {
     return res.status(400).json({ erro: "ID inválido" });
   }
 
-  // delete no banco
-  pool
-    .query("DELETE FROM jogador WHERE id = ?", [id])
-    .then(([result]) => {
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ erro: "Jogador não encontrado" });
-      }
-      res.status(200).json({ mensagem: "Jogador excluído com sucesso" });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ erro: "Erro ao excluir jogador no banco" });
-    });
+  try {
+    const result = await pool.query("DELETE FROM jogador WHERE id = $1", [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ erro: "Jogador não encontrado" });
+    }
+
+    res.status(200).json({ mensagem: "Jogador excluído com sucesso" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao excluir jogador no banco" });
+  }
 });
+
 // Endpoint para adicionar dias úteis a uma data
 app.post("/adicionar-dias-uteis", (req, res) => {
   const { dataInicio, diasParaAdicionar } = req.body;

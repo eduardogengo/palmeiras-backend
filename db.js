@@ -1,12 +1,14 @@
 // db.js
-const mysql = require("mysql2/promise");
+const { Pool } = require("pg");
 
 // cria pool de conexões
-const pool = mysql.createPool({
-  host: "sql10.freesqldatabase.com",      // ou IP do servidor MySQL
-  user: "sql10795590",           // seu usuário
-  password: "pg7W1cUDuB",  // sua senha
-  database: "sql10795590",  // nome do banco
+const pool = new Pool({
+  host: "db.viujexlrejrubtphywbi.supabase.co",       // ex: db.xxxxx.supabase.co
+  port: 5432,             // padrão do Postgres
+  user: "postgres",    // ex: postgres
+  password: "Js$KTYKJMgv#7.%",  // senha definida no serviço
+  database: "postgres",
+  ssl: { rejectUnauthorized: false }, // geralmente necessário em bancos gratuitos na nuvem
 });
 
 module.exports = pool;
