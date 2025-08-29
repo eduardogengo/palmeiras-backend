@@ -8,7 +8,7 @@ const pool = new Pool({
   user: "postgres",    // ex: postgres
   password: "Js$KTYKJMgv#7.%",  // senha definida no serviço
   database: "postgres",
-  ssl: { rejectUnauthorized: false }, // geralmente necessário em bancos gratuitos na nuvem
+  ssl: { require: true, rejectUnauthorized: false }, // geralmente necessário em bancos gratuitos na nuvem
 });
 
 module.exports = pool;
