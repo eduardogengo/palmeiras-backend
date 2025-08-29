@@ -160,6 +160,19 @@ app.get("/dia-da-semana/:data", (req, res) => {
     res.status(400).json({ error: "Erro ao processar a data." });
   }
 });
+
+// endpoint de teste de conexão com o banco
+app.get("/teste-conexao-db", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({ message: "Conexão bem-sucedida!", time: result.rows[0] });
+  } catch (err) {
+    console.error(error);
+    res.status(500).json(error);
+  }
+});
+
+
 // start
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
