@@ -1,5 +1,5 @@
 const express = require("express");
-const pool = require("./db");
+const sql = require("./db");
 const app = express();
 const PORT = 3000;
 const { parseISO, addDays, getDay, isSaturday, isSunday } = require("date-fns");
@@ -21,11 +21,11 @@ app.get("/", (req, res) => {
 // listar todos
 app.get("/jogadores", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM jogador");
-    res.json(result.rows); // no pg, os dados vêm em result.rows
+    const rows = await sql`SELECT * FROM jogador`; // ⬅ aqui usa template literal
+    res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Erro ao buscar jogadores", mensagem: err } );
+    res.status(500).json({ error: 'Erro ao buscar jogadores' });
   }
 });
 
