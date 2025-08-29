@@ -3,7 +3,7 @@ const { Pool } = require("pg");
 
 // cria pool de conexões
 const pool = new Pool({
-  host: "db.viujexlrejrubtphywbi.supabase.co",       // ex: db.xxxxx.supabase.co
+  host: "https://db.viujexlrejrubtphywbi.supabase.co",       // ex: db.xxxxx.supabase.co
   port: 5432,             // padrão do Postgres
   user: "postgres",    // ex: postgres
   password: "Js$KTYKJMgv#7.%",  // senha definida no serviço
