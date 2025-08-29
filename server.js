@@ -28,6 +28,16 @@ app.get("/jogadores", async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar jogadores" });
   }
 });
+// listar todo
+app.get("/posicao", async (req, res) => {
+  try {
+    const rows = await sql`SELECT * FROM posicao`;
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao buscar jogadores" });
+  }
+});
 
 // detalhar 1
 app.get("/jogadores/:id", async (req, res) => {
@@ -104,9 +114,19 @@ app.post("/adicionar-dias-uteis", (req, res) => {
 app.get("/dia-da-semana/:data", (req, res) => {
   const { data } = req.params;
   try {
-    const diaDaSemana = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date(data).getUTCDay()];
+    const diaDaSemana = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ][new Date(data).getUTCDay()];
     if (!diaDaSemana)
-      return res.status(400).json({ error: "Data inválida. Use formato YYYY-MM-DD" });
+      return res
+        .status(400)
+        .json({ error: "Data inválida. Use formato YYYY-MM-DD" });
     res.json({ diaDaSemana });
   } catch (err) {
     res.status(400).json({ error: "Erro ao processar a data." });
