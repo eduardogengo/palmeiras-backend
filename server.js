@@ -25,7 +25,7 @@ app.get('/jogadores', async (req, res) => {
     SELECT 
       jogador.id, 
       jogador.nome, 
-      posicao.descricao
+      posicao.descricao as posicao
     FROM jogador
       JOIN posicao 
         ON jogador.id_posicao = posicao.id;
