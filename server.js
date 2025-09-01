@@ -56,12 +56,12 @@ app.get("/jogadores/:id", async (req, res) => {
 
 // criar
 app.post("/jogadores", async (req, res) => {
-  const { nome, posicao } = req.body;
-  if (!nome || !posicao)
-    return res.status(400).json({ erro: "Nome e posição são obrigatórios" });
+  const { nome, idPosicao } = req.body;
+  if (!nome || !idPosicao)
+    return res.status(400).json({ erro: "Nome e idPosição são obrigatórios" });
 
   try {
-    await sql`INSERT INTO jogador (nome, posicao) VALUES (${nome}, ${posicao})`;
+    await sql`INSERT INTO jogador (nome, id_posicao) VALUES (${nome}, ${idPosicao})`;
     res.status(201).json({ mensagem: "Jogador criado com sucesso" });
   } catch (err) {
     console.error(err);
